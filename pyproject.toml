@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "hawkapi-ratelimit"
-version = "0.1.1"
+version = "0.1.2"
 description = "Rate limiting for HawkAPI — token bucket + sliding window, Redis + in-memory backends"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -14,7 +14,7 @@ authors = [
 ]
 keywords = ["hawkapi", "ratelimit", "throttle", "token-bucket", "sliding-window", "redis"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Framework :: AsyncIO",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",

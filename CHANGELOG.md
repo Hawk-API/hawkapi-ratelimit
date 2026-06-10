@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.2 — 2026-06-10
+
+- Marked as Production/Stable. The API has been stable across releases and is supported for production use.
+
 ## 0.1.1 — 2026-06-10
 
 Security hardening.
