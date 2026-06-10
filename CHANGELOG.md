@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1 — 2026-06-10
+
+Security hardening.
+
+- Header- and API-key-derived rate-limit identities (`header_key()`, `api_key()`) are now SHA-256 hashed before use as Redis keys, so bearer tokens and API keys are no longer observable in the keyspace (CWE-312). Note: this changes the key format produced by these identity functions.
+- The fail-open path (`RedisLimiter` Redis error with `fail_closed=False`) now logs explicitly that the request was allowed despite the error; security-sensitive routes (admin / payment) should set `fail_closed=True` to deny instead.
+
 ## 0.1.0 — 2026-05-17
 
 Initial release.

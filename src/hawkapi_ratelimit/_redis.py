@@ -170,7 +170,10 @@ class RedisLimiter:
             import logging
 
             logging.getLogger("hawkapi_ratelimit").warning(
-                "redis limiter failed (fail-open allowing): %s", exc
+                "redis limiter error — request ALLOWED despite Redis failure "
+                "(fail_closed=False; set fail_closed=True on admin/payment routes "
+                "to deny instead): %s",
+                exc,
             )
             # Fail open — count the request as allowed but report 0 remaining.
             return LimitResult(allowed=True, remaining=0, reset_at=now + limit.per)

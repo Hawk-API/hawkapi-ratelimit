@@ -2,9 +2,19 @@
 
 from __future__ import annotations
 
+import hashlib
 import ipaddress
 from collections.abc import Callable
 from typing import Any
+
+
+def _hash_value(value: str) -> str:
+    """Hash a user-controlled identity value before it lands in the keyspace.
+
+    Defense-in-depth: bearer tokens / API keys must not be observable verbatim
+    in Redis keys. Truncated SHA-256 is collision-resistant for keyspace sizing.
+    """
+    return hashlib.sha256(value.encode()).hexdigest()[:32]
 
 
 def _parse_xff(raw: str) -> str:
@@ -99,7 +109,7 @@ def header_key(header: str, *, prefix: str = "h") -> Callable[[Any], str]:
                 value = headers.get(h, "") or ""
             except Exception:
                 value = ""
-        return f"{prefix}:{value}"
+        return f"{prefix}:{_hash_value(value)}"
 
     return _fn
 
@@ -117,7 +127,7 @@ def api_key() -> Callable[[Any], str]:
                 value = ""
         if value.lower().startswith("bearer "):
             value = value[7:].strip()
-        return f"apikey:{value}"
+        return f"apikey:{_hash_value(value)}"
 
     return _fn
 

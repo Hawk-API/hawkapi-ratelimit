@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "hawkapi-ratelimit"
-version = "0.1.0"
+version = "0.1.1"
 description = "Rate limiting for HawkAPI — token bucket + sliding window, Redis + in-memory backends"
 readme = "README.md"
 license = { file = "LICENSE" }

@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from hawkapi_ratelimit import api_key, composite_key, header_key, ip_key, user_key
+from hawkapi_ratelimit._identity import _hash_value
 
 
 @dataclass
@@ -84,19 +85,22 @@ def test_user_key_object_user() -> None:
 def test_header_key_reads_header() -> None:
     fn = header_key("x-api-key", prefix="api")
     req = _Request(headers={"x-api-key": "abc123"})
-    assert fn(req) == "api:abc123"
+    # Value is hashed (defense-in-depth) — raw header must not leak into keyspace.
+    assert fn(req) == f"api:{_hash_value('abc123')}"
+    assert "abc123" not in fn(req)
 
 
 def test_api_key_strips_bearer_prefix() -> None:
     fn = api_key()
     req = _Request(headers={"authorization": "Bearer my-token"})
-    assert fn(req) == "apikey:my-token"
+    assert fn(req) == f"apikey:{_hash_value('my-token')}"
+    assert "my-token" not in fn(req)
 
 
 def test_api_key_passes_through_non_bearer() -> None:
     fn = api_key()
     req = _Request(headers={"authorization": "Basic dXNlcjpwYXNz"})
-    assert fn(req) == "apikey:Basic dXNlcjpwYXNz"
+    assert fn(req) == f"apikey:{_hash_value('Basic dXNlcjpwYXNz')}"
 
 
 def test_composite_key_combines() -> None:
