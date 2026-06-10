@@ -7,6 +7,8 @@ or middleware. Standard ``X-RateLimit-*`` + ``Retry-After`` headers.
 
 from __future__ import annotations
 
+from importlib.metadata import PackageNotFoundError, version
+
 from ._base import IdentityFn, Limiter, LimitResult, RateLimit
 from ._decorator import rate_limit
 from ._identity import api_key, composite_key, header_key, ip_key, user_key
@@ -15,7 +17,10 @@ from ._middleware import RateLimitMiddleware
 from ._plugin import get_limiter, init_ratelimit, resolve_limiter
 from ._redis import RedisLimiter
 
-__version__ = "0.1.0"
+try:
+    __version__ = version("hawkapi-ratelimit")
+except PackageNotFoundError:  # pragma: no cover - running from a source tree without install
+    __version__ = "0.0.0"
 
 __all__ = [
     "IdentityFn",
